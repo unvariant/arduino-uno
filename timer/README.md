@@ -1,0 +1,2 @@
+# Onboard timers
+The [ATmega328p](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf) contains three onboard timers. One 8 bit timer (timer 0) and two 16 bit timers (timer 1 & 2).

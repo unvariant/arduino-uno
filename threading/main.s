@@ -6,6 +6,11 @@
     .cseg
 
 _start:
+    ldi   r17,  HIGH(RAMEND)
+    ldi   r16,  LOW(RAMEND)
+    out   SPH,  r17
+    out   SPL,  r16
+
     RESERVE_MAIN_STACK 0x80
 
     MALLOC_INIT
@@ -16,11 +21,13 @@ _start:
 
     clr   r16
     out   PRTB, r16
+    out   PRTD, r16
+    out   PRTC, r16
 
     ser   r16
-    out   PRTD, r16
     out   DDRB, r16
     out   DDRD, r16
+    out   DDRC, r16
 
     ldi   r17,  HIGH(blink)
     ldi   r16,  LOW(blink)
@@ -29,21 +36,21 @@ _start:
     call  thread_create
     call  thread_run
 
-    ldi   r16,  1 << 7
 hang:
-    in    r17,  PRTD
-    eor   r17,  r16
-    out   PRTD, r17
-    rcall delay
-    rjmp  hang
-
-blink:
     ldi   r16,  1 << 5
-loop:
     in    r17,  PRTB
     eor   r17,  r16
     out   PRTB, r17
-    rcall delay
+    call  delay
+    rjmp  hang
+
+blink:
+    ldi   r16,  1 << 0
+loop:
+    in    r17,  PRTD
+    eor   r17,  r16
+    out   PRTD, r17
+    call  delay
     rjmp  loop
 
 delay:

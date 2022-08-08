@@ -18,4 +18,4 @@ debug: main.hex
 clean:
 	-rm -r *.bin
 	-rm -r *.obj
-	-rm -r *.eep.hex
+	-rm -r *.hex

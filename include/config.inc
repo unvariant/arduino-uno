@@ -3,7 +3,9 @@
 
     .DEVICE ATmega328p
 
-.equ RAMEND = 0x0900
+    .def zero = r1
+
+.equ RAMEND = 0x08FF
 ;;; NOTE: all of the following register addresses
 ;;; are their IO address, not data space addresses
 

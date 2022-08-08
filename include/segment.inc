@@ -1,0 +1,21 @@
+.equ SEG_A   = 1 << 0
+.equ SEG_B   = 1 << 1
+.equ SEG_C   = 1 << 2
+.equ SEG_D   = 1 << 3
+.equ SEG_E   = 1 << 4
+.equ SEG_F   = 1 << 5
+.equ SEG_G   = 1 << 6
+.equ SEG_DP  = 1 << 7
+.equ SEG_ALL = 0x7F
+
+.equ SEG_CHAR_0 = SEG_ALL ^ SEG_G
+.equ SEG_CHAR_1 = SEG_B   | SEG_C
+.equ SEG_CHAR_2 = SEG_ALL ^ SEG_F ^ SEG_C
+.equ SEG_CHAR_3 = SEG_ALL ^ SEG_F ^ SEG_E
+.equ SEG_CHAR_4 = SEG_ALL ^ SEG_A ^ SEG_D ^ SEG_E
+.equ SEG_CHAR_5 = SEG_ALL ^ SEG_B ^ SEG_E
+.equ SEG_CHAR_6 = SEG_ALL ^ SEG_B
+.equ SEG_CHAR_7 = SEG_A   | SEG_B | SEG_C
+.equ SEG_CHAR_8 = SEG_ALL
+.equ SEG_CHAR_9 = SEG_ALL ^ SEG_D ^ SEG_E
+.equ SEG_CHAR_NONE = 0

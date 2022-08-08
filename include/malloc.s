@@ -15,7 +15,7 @@
 
 ;;; malloc memory from data section
 ;;; mallocd memory cannot be freed
-;;; clobbers r30, r31
+;;; returns pointer in r31:r30
 malloc:
     push  r29
     push  r28

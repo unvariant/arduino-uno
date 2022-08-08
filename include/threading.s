@@ -11,7 +11,7 @@
 ;;;     done: bool,     // 1
 ;;;     exit_code: u8   // 1
 ;;; }
-;;; /// size: 5 bytes
+;;; /// size: 6 bytes
 
     .equ NEXTL_OFFSET = 0
     .equ NEXTH_OFFSET = 1
@@ -19,7 +19,7 @@
     .equ SPH_OFFSET   = 3
     .equ DONE_OFFSET  = 4
     .equ EXITC_OFFSET = 5
-    .equ THREAD_INFO_SIZE = 6
+    .equ THREAD_INFO_SIZE = 16
 
     .equ CONTEXT_SWITCH_OVERHEAD = 36
 
@@ -52,8 +52,8 @@ thread_state_init:
     sts   _thread_stack_bottom+1, r31
     sts   _thread_stack_bottom,   r30
 
-    clr   r17
-    ldi   r16,     THREAD_INFO_SIZE
+    ldi   r17,     HIGH(THREAD_INFO_SIZE)
+    ldi   r16,     LOW(THREAD_INFO_SIZE)
     call  malloc
 
     std   Z+NEXTH_OFFSET, r31
@@ -68,7 +68,7 @@ thread_state_init:
 setup_timer1:
 
     .set SWITCH_DELAY = 1562
-    .set SWITCH_DELAY = 0xFFFF / 2
+    .set SWITCH_DELAY = 0xFFFF
 
     cli
 
@@ -79,19 +79,19 @@ setup_timer1:
     sts   OCR1AH, r17
     sts   OCR1AL, r16
     lds   r16,    TIMSK1
-    ori   r16,    (1 << OCIE1A)
+    ori   r16,    1 << OCIE1A
     sts   TIMSK1, r16
     clr   r16
     sts   TCNT1H, r16
     sts   TCNT1L, r16
+
+    sei
 
     pop   r16
     pop   r17
 
     pop   r30
     pop   r31
-
-    sei
 
     ret
 
@@ -104,23 +104,46 @@ setup_timer1:
 ;;; return: r31:r30 -> struct Thread, r29:r28 -> saved info
 ;;; errors: none
 _thread_create:
-    sbiw  r30,     CONTEXT_SWITCH_OVERHEAD
+    in    r26,     SPL
+    in    r27,     SPH
+
+    out   SPH,     r31
+    out   SPL,     r30
+
+    push  r16
+    push  r17
 
     clr   r28
     ldi   r29,     33
-thread_create_clear:
-    st    Z+,      r28
+_thread_create_clear:
+    push  r28
     dec   r29
-    brne  thread_create_clear
+    brne  _thread_create_clear
 
-    st    Z+,      r17
-    st    Z+,      r16
+    in    r28,     SPL
+    in    r29,     SPH
 
-    movw  r28,     r30
-    sbiw  r28,     CONTEXT_SWITCH_OVERHEAD+1
+    out   SPH,     r27
+    out   SPL,     r26
 
-    clr   r17
-    ldi   r16,     THREAD_INFO_SIZE
+;    sbiw  r30,     CONTEXT_SWITCH_OVERHEAD-1
+
+;    clr   r28
+;    ldi   r29,     33
+;_thread_create_clear:
+;    st    Z+,      r28
+;    dec   r29
+;    brne  _thread_create_clear
+
+;    st    Z+,      r17
+;    st    Z+,      r16
+
+;    movw  r28,     r30
+;    sbiw  r28,     CONTEXT_SWITCH_OVERHEAD+1
+;    sbiw  r28,     CONTEXT_SWITCH_OVERHEAD
+
+    ldi   r17,     HIGH(THREAD_INFO_SIZE)
+    ldi   r16,     LOW(THREAD_INFO_SIZE)
     call  malloc
 
     std   Z+SPH_OFFSET, r29
@@ -140,6 +163,9 @@ thread_create:
     push  r29
     push  r28
 
+    push  r27
+    push  r26
+
     cli
 
     lds   r31,      _thread_stack_bottom+1
@@ -153,6 +179,9 @@ thread_create:
     sts   _thread_stack_bottom,   r28
 
     sei
+
+    pop   r26
+    pop   r27
     
     pop   r28
     pop   r29
@@ -238,18 +267,16 @@ context_switch:
     in   r16,     SREG
     push r16
 
-    ldi  r16,     1 << 5
-    in   r17,     PRTB
+    ldi  r16,     1 << 0
+    in   r17,     PRTC
     eor  r17,     r16
-    out  PRTB,    r17
-
-    rjmp skip_switch
+    out  PRTC,    r17
 
     lds  r31,     _current_thread+1
     lds  r30,     _current_thread
 
-    in   r17,     SPH
     in   r16,     SPL
+    in   r17,     SPH
     std  Z+SPH_OFFSET, r17
     std  Z+SPL_OFFSET, r16
 
@@ -264,7 +291,6 @@ context_switch:
     out  SPH,     r17
     out  SPL,     r16
 
-skip_switch:
     pop  r16
     out  SREG,    r16
 
