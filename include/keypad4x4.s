@@ -215,14 +215,14 @@ _keypad_just_released:
     clr   r24
 
     sbrc  r0,  KEY_PRESSED
-    rjmp  keypad_just_released_end
+    rjmp  _keypad_just_released_end
 
     sbrs  r0,  KEY_TOGGLED
-    rjmp  keypad_just_released_end
+    rjmp  _keypad_just_released_end
 
     inc   r24
 
-keypad_just_released_end:
+_keypad_just_released_end:
     ret
 
 keypad_is_pressed:
