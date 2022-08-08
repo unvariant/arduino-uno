@@ -19,7 +19,7 @@
     .equ SPH_OFFSET   = 3
     .equ DONE_OFFSET  = 4
     .equ EXITC_OFFSET = 5
-    .equ THREAD_INFO_SIZE = 16
+    .equ THREAD_INFO_SIZE = 6
 
     .equ CONTEXT_SWITCH_OVERHEAD = 36
 
