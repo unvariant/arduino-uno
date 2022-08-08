@@ -1,6 +1,10 @@
     .ifndef _HEAP_S_
     .define _HEAP_S_
 
+
+    .cseg
+
+
 .macro MALLOC_INIT
     ldi  r17,     HIGH(_data_end)
     ldi  r16,     LOW(_data_end)
@@ -39,5 +43,11 @@ malloc:
     pop   r29
 
     ret
+
+
+    .dseg
+
+_heap: .byte 2
+
 
     .endif

@@ -66,5 +66,4 @@ delay_inner:
     ret
 
     .dseg
-_heap: .byte 2
 _data_end:
