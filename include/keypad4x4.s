@@ -32,7 +32,9 @@
 ;;; test the states of the column bits
 ;;; if a column is low then a button is pressed
 
+
     .cseg
+
 
 ;;; r25:r24 -> pointer to keymap
 keypad_init:
